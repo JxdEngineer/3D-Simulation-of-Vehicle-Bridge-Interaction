@@ -6,4 +6,4 @@ Run Simulation_VBI.m to carry out the simulation.
 
 Author: JIAN Xudong, Tongji University, Department of Bridge Engineering.
 
-Please contact jxd_engineer@tongji.edu.cn if you have any questions
+Please contact jxd.engineer@gmail.com if you have any questions
