@@ -1,19 +1,19 @@
 function node_def=GetDeformation3D(deformation,node,dof_index,scale)
-% 此函数用于获取变形后的桥梁节点坐标
-% node_def是变形后的桥梁节点坐标
-% deformation是求解出的桥梁节点位移，列向量
-% node是变形前的桥梁节点坐标
-% dof_index是自由度编号-节点号映射矩阵
-% scale是变形放大因子
+% This function is used to obtain the coordinates of the bridge node after deformation
+% node_def is the coordinates of the bridge node after deformation
+% deformation is the calculated bridge node displacement, column vector
+% node is the coordinates of the bridge node before deformation
+% dof_index is the degree of freedom number-node number mapping matrix
+% scale is the deformation magnification factor
 def=[dof_index,deformation];
 node_def=node;
 
-index_X=(def(:,2)==1);%自由度类型为1，即X方向，纵桥向
+index_X=(def(:,2)==1); %DOF=1, X direction, longitudinal
 node_def(def(index_X,1),1)=node_def(def(index_X,1),1)+def(index_X,4)*scale;
 
-index_Y=(def(:,2)==2);%自由度类型为2，即Y方向，横桥向
+index_Y=(def(:,2)==2); %DOF=2, Y direction, lateral
 node_def(def(index_Y,1),2)=node_def(def(index_Y,1),2)+def(index_Y,4)*scale;
 
-index_Z=(def(:,2)==3); %自由度类型为3，即Z方向，竖桥向
+index_Z=(def(:,2)==3); %DOF=3, Z direction, vertical
 node_def(def(index_Z,1),3)=node_def(def(index_Z,1),3)+def(index_Z,4)*scale;
 end
