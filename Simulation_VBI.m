@@ -1,12 +1,10 @@
-% 2022.03.07 VBI simulation main program
-% reference: Zhang, Nan, and He Xia. "Dynamic analysis of coupled vehicle–bridge system based on inter-system iteration method." Computers & Structures 114 (2013): 26-34.
 %% Prepare road/bridge/vehicle model
 clc
 clear
 close all
 tic
-dT=0.001;        
-uv=5;            
+dT=0.005;        
+uv=10;  % m/s          
 T=70/uv;         
 %%%%%%%%%%%% road roughness model
 RoadLx=200;    
@@ -231,7 +229,6 @@ end
 % start calculating
 count=1;
 while 1
-    fprintf('VBI iteration %d\n',count)
     Zb=ModeDecomposition(Mnb,Knb,Zetan,Fb{count},Phib,Zb0,dT,T);  % updating bridge response
     for k=1:Nv
         vehicle(k).Fvrb=zeros(length(vehicle(k).Kv),T/dT+1); 
@@ -256,9 +253,10 @@ while 1
     if error(count)<0.01  % stop if reach convergence
         break
     end
+    fprintf('VBI iteration round: %d, convergence error: %d\n',count, error)
     count=count+1;
 end
-disp(['calculating spends ',num2str(toc)])
+disp(['VBI solving time (sec): ',num2str(toc)])
 % save results
 tic
 
@@ -267,6 +265,6 @@ tic
 dof = SearchDofIndex(10.102041000000000,-6,-0.1,node,dof_index,3);  % bridge acc.
 signal_b = Zb{3}(dof,:);
 clear Zb Phib rs RoadX RoadY Zb0 Fbr Fb dof_index Fbrb
-save output.mat  
+% save output.mat  
 
-disp(['saving results spends ',num2str(toc)])
+disp(['Results saving time (sec): ',num2str(toc)])
