@@ -1,0 +1,18 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!操作二进制文件，将刚度矩阵写入数组!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!Modal Analysis*******
+ORDERS=5
+/SOLU
+ANTYPE,2
+ALLSEL,ALL
+MODOPT,LANB,ORDERS        !'Lanczos'method
+MXPAND,ORDERS,,,0             !Modal expansion
+SOLVE
+FINISH
+/aux2
+file,arg1,full
+hbmat,hbfile_stiff,txt,,ascii,stiff,yes,yes		!!!!写刚度矩阵
+hbmat,hbfile_mass,txt,,ascii,mass,yes,yes		!!!!写质量矩阵或应力刚度矩阵
+finish
+

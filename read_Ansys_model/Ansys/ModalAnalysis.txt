@@ -1,0 +1,107 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!   进行模态求解       !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/UIS,MSGPOP,3
+/NERR,5,10000,  !限制警告及错误信息的显示条数 每条命令5条 总共10000条  
+/CONFIG,NRES,200000
+
+!*******************静力计算********************
+/SOLU
+ALLSEL,ALL
+ACEL,0,0,9.8  !自重荷载
+ANTYPE,0
+SOLVE
+FINISH
+
+modenum=500  !需要的模态阶数上限
+!模态求解开始*******
+/SOLU
+ANTYPE,MODAL
+ALLSEL,ALL
+MODOPT,LANB,modenum        !“Lanczos”法计算前?阶振型及频率
+MXPAND,modenum,,,1         !模态扩展，这里最后一个参数必须设为1，否则下面无法提取模态参数
+SOLVE
+FINISH
+!模态求解结束*******
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!从ANSYS中导出模态频率、振型、模态刚度、模态质量
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/Post1
+alls
+*get,nodenummax,node,0,num,max  !读取节点上限
+*get,nodenummin,node,0,num,min  !读取节点下限
+
+!输出模态频率（Hz）、振型刚度、振型质量!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*CREATE,ANSUITMP         !创建输出流
+*CFOPEN,ModalFKM,txt !打开文件
+*Vwrite             
+(1x,'MODENUM       FREQUENCY       MASS       STIFFNESS')
+
+*Do,i,1,modenum,1   !循环从1到modenum 每次进1
+
+*Get,modefq,mode,i,freq !提取频率
+
+set,1,i !定位至需要振型
+!写入猜测的mass和stiff
+etable,kene,kene
+ssum    !获取动能 
+*get,keneval1,ssum,,item,kene
+*get,freqval1,mode,i,freq
+!这里的等效质量计算的时候已经默认了z方向的振幅最大
+!如果以其他自由度为主的模态会不适用
+nsort,u,z,1,0
+*get,nodemaxz,sort,0,max,
+eigen1=(2*3.14159*freqval1)**2
+emass1=2*keneval1/eigen1
+emass2=2*keneval1/eigen1/nodemaxz/nodemaxz
+estiff1=2*keneval1
+estiff2=2*keneval1/nodemaxz/nodemaxz
+
+!按模态质量归一化
+estiff1=estiff1/emass1
+emass1=1
+estiff2=estiff2/emass2
+emass2=1
+
+!写入模态阶数/频率/振型质量/振型刚度
+aa='%i%'  !模态阶数
+*Vwrite, aa,modefq,emass1,estiff1
+(A10,3f20.8) !A10表示1个整数，3f20.8表示3个浮点数
+
+*Enddo
+*cfclos         !关闭文件
+*end
+/input,ANSUITMP  !关闭输出流
+
+
+
+   
+!输出振型向量!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*CREATE,ANSUITMP         !创建输出流
+*CFOPEN,ModalPhi,txt !打开文件
+*Vwrite 
+(1x,'MODENUM NODENUM UX UY UZ')
+
+*Do,i,1,modenum,1   !循环从1到modenum 每次进1
+set,1,i !定位至需要振型
+nsort,u,z,1,0
+!从上下限循环读取位移
+*Do,ii,nodenummin,nodenummax,1
+*Get,modeshpx,node,ii,u,x  !判断是否有结果
+*Get,modeshpy,node,ii,u,y 
+*Get,modeshpz,node,ii,u,z
+!*Get,modeshprx,node,ii,rot,x
+!*Get,modeshpry,node,ii,rot,y
+!*Get,modeshprz,node,ii,rot,z
+!写入模态阶数/节点编号/振型向量
+aa='%i%'  !模态阶数
+bb='%ii%' !节点编号      
+*vwrite,aa,bb,modeshpx,modeshpy,modeshpz
+(2A10,3e20.8)  !2A10表示2个整数，3e20.8表示3个科学计数法
+*Enddo 
+*Enddo
+
+*cfclos         !关闭文件
+*end
+/input,ANSUITMP  !关闭输出流
