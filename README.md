@@ -4,7 +4,7 @@ This repository is used to simulate the 3D vehicle-bridge-interaction introduced
 
 Run Simulation_VBI.m to carry out the simulation.
 
-The bridge should be modelled with Ansys software. Then use scripts in the 'read_Anasys_data' folder to read necessary data for the VBI simulation.
+The bridge should be modelled with Ansys software. Then use scripts in the 'read_Anasys_data' folder to read necessary data from Ansys to MATLAB for the VBI simulation.
 
 If you use this code in your academic work or any work with publicly available reports, please cite our paper.
 
