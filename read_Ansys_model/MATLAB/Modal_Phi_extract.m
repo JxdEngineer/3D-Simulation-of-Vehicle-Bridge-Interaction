@@ -1,27 +1,26 @@
 function  phi = Modal_Phi_extract(dof_index,filename,directory )
 
-% ´ÓANSYSÄ£Ì¬·ÖÎö½á¹ûÖÐÌáÈ¡Ä£Ì¬·ÖÎö½á¹ûµ½MATLAB£ºÇÅÁºÕñÐÍÏòÁ¿Phi
-% phiµÄµÚnÁÐ£ºµÚn½×ÕñÐÍÏòÁ¿£¬°´×ÔÓÉ¶È±àºÅË³ÐòÅÅÐò
-% ÐèÒªÓëANSYSÄ£Ì¬·ÖÎöÅäºÏÊ¹ÓÃ£¬Ïê¼û¡°E:\FangCloudV2\personal_space\1 ÕýÊÂ\2 ¿ÆÑÐ\%²©Ê¿ÂÛÎÄ\2
-% ÊýÖµ¼ÆËã\2 ÇÅÁºÄ£ÐÍ\ANSYS½¨Ä£\´óÏäÁº¡±Ä¿Â¼ÏÂµÄ·ÖÎö³ÌÐò
-% ÐèÒªÏÈ¼ÆËã³ö½Úµã-×ÔÓÉ¶È±àºÅdof_index
+% ä»ŽANSYSæ¨¡æ€åˆ†æžç»“æžœä¸­æå–æ¨¡æ€åˆ†æžç»“æžœåˆ°MATLABï¼šæ¡¥æ¢æŒ¯åž‹å‘é‡Phi
+% phiçš„ç¬¬nåˆ—ï¼šç¬¬né˜¶æŒ¯åž‹å‘é‡ï¼ŒæŒ‰è‡ªç”±åº¦ç¼–å·é¡ºåºæŽ’åº
+% éœ€è¦ä¸ŽANSYSæ¨¡æ€åˆ†æžé…åˆä½¿ç”¨
+% éœ€è¦å…ˆè®¡ç®—å‡ºèŠ‚ç‚¹-è‡ªç”±åº¦ç¼–å·dof_index
 
 path=strcat([directory,filename]);
 fid=fopen(path);
 Modal=textscan(fid,'%d %d %f %f %f','HeaderLines',1);
-order=double(Modal{1}); %Êý¾Ý¸ñÊ½´Óint×ª»¯ÎªdoubleÐÎÊ½
-orderN=double(max(order)); %ÕñÐÍ½×Êý£¬Êý¾Ý¸ñÊ½´Óint×ª»¯ÎªdoubleÐÎÊ½£¬·ñÔòÎÞ·¨¼ÆËã
-nodeN=double(max(Modal{2})); %½ÚµãÊýÄ¿£¬Êý¾Ý¸ñÊ½´Óint×ª»¯ÎªdoubleÐÎÊ½£¬·ñÔòÎÞ·¨¼ÆËã
+order=double(Modal{1}); %æ•°æ®æ ¼å¼ä»Žintè½¬åŒ–ä¸ºdoubleå½¢å¼
+orderN=double(max(order)); %æŒ¯åž‹é˜¶æ•°ï¼Œæ•°æ®æ ¼å¼ä»Žintè½¬åŒ–ä¸ºdoubleå½¢å¼ï¼Œå¦åˆ™æ— æ³•è®¡ç®—
+nodeN=double(max(Modal{2})); %èŠ‚ç‚¹æ•°ç›®ï¼Œæ•°æ®æ ¼å¼ä»Žintè½¬åŒ–ä¸ºdoubleå½¢å¼ï¼Œå¦åˆ™æ— æ³•è®¡ç®—
 dofN=length(dof_index);
 
-phi=zeros(dofN,orderN); %ÕñÐÍÔª°ûÊý×é
+phi=zeros(dofN,orderN); %æŒ¯åž‹å…ƒèƒžæ•°ç»„
 
-parpool('local',8) %´ò¿ª²¢ÐÐ¼ÆËã¼ÓËÙ´óÌåÁ¿forÑ­»·
+parpool('local',8) %æ‰“å¼€å¹¶è¡Œè®¡ç®—åŠ é€Ÿå¤§ä½“é‡forå¾ªçŽ¯
 
 parfor i=1:orderN
     for j=1:dofN
-        dof_type=dof_index(j,2); %µÚj¸ö×ÔÓÉ¶È±àºÅµÄÀàÐÍ1/2/3±íÊ¾X/Y/Z
-        dof_node=dof_index(j,1); %µÚj¸ö×ÔÓÉ¶È±àºÅµÄ½ÚµãºÅ
+        dof_type=dof_index(j,2); %ç¬¬jä¸ªè‡ªç”±åº¦ç¼–å·çš„ç±»åž‹1/2/3è¡¨ç¤ºX/Y/Z
+        dof_node=dof_index(j,1); %ç¬¬jä¸ªè‡ªç”±åº¦ç¼–å·çš„èŠ‚ç‚¹å·
         if dof_type==1
             phi(j,i)=Modal{3}((i-1)*nodeN+dof_node);
         elseif dof_type==2
