@@ -1,8 +1,7 @@
 function  [fb,Mn,Kn] = Modal_FKM_extract(filename,directory)
 
-% ´ÓANSYSÄ£Ì¬·ÖÎö½á¹ûÖÐÌáÈ¡Ä£Ì¬·ÖÎö½á¹ûµ½MATLAB£ºÇÅÁºÆµÂÊfb¡¢ÕñÐÍ¸Õ¶ÈMn¡¢ÕñÐÍÖÊÁ¿Kn
-% ÐèÒªÓëANSYSÄ£Ì¬·ÖÎöÅäºÏÊ¹ÓÃ£¬Ïê¼û¡°E:\FangCloudV2\personal_space\1 ÕýÊÂ\2 ¿ÆÑÐ\%²©Ê¿ÂÛÎÄ\2
-% ÊýÖµ¼ÆËã\2 ÇÅÁºÄ£ÐÍ\ANSYS½¨Ä£\´óÏäÁº¡±Ä¿Â¼ÏÂµÄ·ÖÎö³ÌÐò
+% ä»ŽANSYSæ¨¡æ€åˆ†æžç»“æžœä¸­æå–æ¨¡æ€åˆ†æžç»“æžœåˆ°MATLABï¼šæ¡¥æ¢é¢‘çŽ‡fbã€æŒ¯åž‹åˆšåº¦Mnã€æŒ¯åž‹è´¨é‡Kn
+% éœ€è¦ä¸ŽANSYSæ¨¡æ€åˆ†æžé…åˆä½¿ç”¨
 
 path=strcat([directory,filename]);
 fid=fopen(path);
